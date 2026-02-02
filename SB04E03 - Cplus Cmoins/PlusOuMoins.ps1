@@ -1,49 +1,57 @@
 # Configuration pour les accents
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-Write-Host "=========================================="
-Write-Host "       JEU DU NOMBRE MYSTÈRE (1-100)      "
-Write-Host "=========================================="
+# 1. Titre
+Write-Host "**********************************************" -ForegroundColor Cyan   
+Write-Host "    BIENVENUE AU JEU DU C'EST + OU C'EST -    " -ForegroundColor Red
+Write-Host "**********************************************" -ForegroundColor Cyan
 Write-Host ""
 
-# 1. Générer un nombre aléatoire entre 1 et 100
+# 2. Message d'accueil et règles
+Write-Host "[RÈGLES DU JEU]" -ForegroundColor Yellow
+Write-Host "Trouves le nombre mystère entre 1 et 100." -ForegroundColor Yellow
+Write-Host "Le but est de le trouver en un minimum d'essais!" -ForegroundColor Yellow
+Write-Host "----------------------------------------------" -ForegroundColor Yellow
+Write-Host ""
+
+# Génération du nombre mystère
 $nombreMystere = Get-Random -Minimum 1 -Maximum 101
 $tentatives = 0
 $trouve = $false
 
 # Boucle de jeu
 while (-not $trouve) {
-    # 2. Demander au joueur de proposer un nombre
+    # Demander au joueur de proposer un nombre
     $choix = Read-Host "Quel est le nombre mystère?"
     $tentatives++
 
-    # Vérifier si l'entrée est bien un nombre
+    # Vérification de la validité
     if ($choix -as [int]) {
         $nombrePropose = [int]$choix
 
-        # 3. Comparer la proposition
         if ($nombrePropose -eq $nombreMystere) {
-            # 5. Victoire !
+            # 3. Message de victoire (Cyan)
             Write-Host ""
-            Write-Host "Bravo! Tu as trouvé le nombre mystère $nombreMystere !"
-            Write-Host "Nombre de tentatives : $tentatives"
+            Write-Host "🏆 FÉLICITATIONS ! 🏆" -ForegroundColor Cyan
+            Write-Host "Tu as trouvé le nombre mystère $nombreMystere en $tentatives tentatives !" -ForegroundColor Cyan
             $trouve = $true
         }
         elseif ($nombrePropose -lt $nombreMystere) {
-            # 4. Plus grand
-            Write-Host "Nop! c'est plus! Essaie encore!"
+            # 4. Plus grand (Bleu) + Affichage tentative
+            Write-Host "Nop! c'est plus! Essaie encore! (Essai n°$tentatives)" -ForegroundColor Blue
         }
         else {
-            # 4. Plus petit
-            Write-Host "Nop! c'est moins! Essaie encore!"
+            # 4. Plus petit (Vert) + Affichage tentative
+            Write-Host "Nop! c'est moins! Essaie encore! (Essai n°$tentatives)" -ForegroundColor Green
         }
     }
     else {
-        Write-Host "Erreur : Met un nombre entre 1 et 100"
+        Write-Host "Erreur! : Met un nombre entre 1 et 100!" -ForegroundColor Red
+        $tentatives-- # On ne compte pas une erreur de frappe comme une tentative
     }
 }
 
-# 6. Pause à la fin
+# Pause finale
 Write-Host ""
-Write-Host "Appuyez sur une touche pour quitter..."
+Write-Host "Appuyez sur une touche pour quitter le programme..." -ForegroundColor Gray
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
