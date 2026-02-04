@@ -60,6 +60,14 @@ echo "Utilisation des partitions (Disques) :"
 # On affiche les colonnes Système de fichiers, Taille, et Utilisation %
 df -h --output=source,size,pcent | grep '^/'
 echo ""
+# 5 Processus consommant le +
+echo "5 Processus consommant le plus pour le CPU en % :"
+ps -eo comm,pcpu --sort=-pcpu | head -n 6 | tail -n 5
+echo ""
+echo "5 Processus consommant le plus pour la MÉMOIRE en % :"
+ps -eo comm,pmem --sort=-pmem | head -n 6 | tail -n 5
+
+echo ""
 echo "==========================================="
 
 # 5 Génération du Rapport en .txt
@@ -85,6 +93,12 @@ FICHIER_LOG="/var/log/monitor_$(date +%Y%m%d).txt"
     echo ""
     echo "Utilisation des partitions :"
     df -h --output=source,size,pcent | grep '^/'
+    echo ""
+    echo "5 Processus consommant le plus pour le CPU en % :"
+    ps -eo comm,pcpu --sort=-pcpu | head -n 6 | tail -n 5
+    echo ""
+    echo "5 Processus consommant le plus pour la MÉMOIRE en % :"
+    ps -eo comm,pmem --sort=-pmem | head -n 6 | tail -n 5
     echo ""
     echo "==========================================="
 } > "$FICHIER_LOG"
