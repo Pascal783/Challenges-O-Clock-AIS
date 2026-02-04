@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# Code couleur
+VERT='\033[0;32m'
+JAUNE='\033[1;33m'
+ROUGE='\033[0;31m'
+NC='\033[0m' # Pas de couleur
+
+# Fonction pour le choix de couleur
+get_color() {
+    local valeur=$(printf "%.0f" "$1")
+    if [ "$valeur" -lt 70 ]; then
+        echo -e "$VERT"
+    elif [ "$valeur" -le 85 ]; then
+        echo -e "$JAUNE"
+    else
+        echo -e "$ROUGE"
+    fi
+}
+
 # 1. Variables
 NOM_SERVEUR=$(hostname)
 DATE=$(date "+%d/%m/%Y %H:%M:%S")
@@ -19,6 +37,9 @@ MEM_POURCENT=$(free | awk '/Mem:/ {printf("%.2f"), $3/$2*100}')
 NB_PROCESSUS=$(ps aux | wc -l)
 
 # 4. Rapport
+C_CPU=$(get_color "$CHARGE_CPU")
+C_MEM=$(get_color "$MEM_POURCENT")
+
 echo ""
 echo "==========================================="
 echo "   Informations Système - $NOM_SERVEUR"
@@ -30,8 +51,8 @@ echo "Nombre de processus : $NB_PROCESSUS"
 echo ""
 echo "-------------------------------------------"
 echo ""
-echo "Utilisation CPU    : $CHARGE_CPU%"
-echo "Utilisation Mémoire: ${MEM_UTILISEE}Go / ${MEM_TOTALE}Go ($MEM_POURCENT%)"
+echo -e "Utilisation CPU    : ${C_CPU}$CHARGE_CPU%${NC}"
+echo -e "Utilisation Mémoire: ${C_MEM}${MEM_UTILISEE}Go / ${MEM_TOTALE}Go ($MEM_POURCENT%)${NC}"
 echo ""
 echo "-------------------------------------------"
 echo ""
