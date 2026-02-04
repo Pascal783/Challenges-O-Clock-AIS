@@ -64,3 +64,28 @@ else
     echo "--------------------------------------------"
     echo "Erreur lors de la création de la sauvegarde."  >> "$LOG"
 fi
+
+# 7. ROTATION : Garder les 7 dernières sauvegardes
+echo ""
+echo "Vérification de la rotation des sauvegardes..."
+
+# On compte combien il y a de fichiers backup_*.tar.gz
+NB_FICHIERS=$(ls -1 "$DEST"/backup_*.tar.gz | wc -l)
+
+if [ "$NB_FICHIERS" -gt 7 ]; then
+    # On calcule combien on doit en supprimer
+    A_SUPPRIMER=$((NB_FICHIERS - 7))
+    
+    # La commande 'ls -t' trie par date (plus récent au plus vieux)
+    # 'tail -n' récupère les derniers (donc les plus vieux)
+    # 'xargs rm' les supprime
+    ls -1t "$DEST"/backup_*.tar.gz | tail -n "$A_SUPPRIMER" | xargs rm
+    
+    echo ""
+    echo "Rotation effectuée : $A_SUPPRIMER ancienne(s) sauvegarde(s) supprimée(s)." | tee -a "$LOG"
+    echo ""
+else
+    echo ""
+    echo "Rotation : Moins de 7 sauvegardes présentes, rien à supprimer."
+    echo ""
+fi
