@@ -61,3 +61,33 @@ echo "Utilisation des partitions (Disques) :"
 df -h --output=source,size,pcent | grep '^/'
 echo ""
 echo "==========================================="
+
+# 5 Génération du Rapport en .txt
+
+# Nom du Fichier
+FICHIER_LOG="/var/log/monitor_$(date +%Y%m%d).txt"
+
+{
+    echo "==========================================="
+    echo "   Informations Système - $NOM_SERVEUR"
+    echo "==========================================="
+    echo ""
+    echo "Date/Heure : $DATE"
+    echo "Temps de service (Uptime)     : $UPTIME"
+    echo "Nombre de processus  : $NB_PROCESSUS"
+    echo ""
+    echo "-------------------------------------------"
+    echo ""
+    echo "Utilisation CPU    : $CHARGE_CPU%"
+    echo "Utilisation Mémoire: ${MEM_UTILISEE}Go / ${MEM_TOTALE}Go ($MEM_POURCENT%)"
+    echo ""
+    echo "-------------------------------------------"
+    echo ""
+    echo "Utilisation des partitions :"
+    df -h --output=source,size,pcent | grep '^/'
+    echo ""
+    echo "==========================================="
+} > "$FICHIER_LOG"
+echo ""
+echo -e "Rapport enregistré dans : ${VERT}$FICHIER_LOG${NC}"
+echo ""
