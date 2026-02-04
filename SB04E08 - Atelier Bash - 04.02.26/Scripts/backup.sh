@@ -17,26 +17,26 @@ fi
 
 if [ ! -d "$SOURCE" ]; then
     echo ""
-    echo "Erreur : Le répertoire source '$SOURCE' n'existe pas." | tee -a "$LOG_FILE"
+    echo "Erreur : Le répertoire source '$SOURCE' n'existe pas." | tee -a "$LOG"
     echo ""
     exit 1
 fi
 
-# 3. Vérification espace disque dispo
+# 3. Créer le dossier de destination s'il n'existe pas
+if [ ! -d "$DEST" ]; then
+    echo ""
+    echo "Création du dossier $DEST..."
+    echo ""
+    mkdir -p "$DEST"
+fi
+
+# 4. Vérification espace disque dispo
 DISPO=$(df "$DEST" | awk 'NR==2 {print $4}')
 TAILLE_SOURCE=$(du -s "$SOURCE" | awk '{print $1}')
 
 if [ "$TAILLE_SOURCE" -gt "$DISPO" ]; then
     echo "ERREUR : Espace disque insuffisant sur $DEST." >> "$LOG"
     exit 1
-fi
-
-# 4. Créer le dossier de destination s'il n'existe pas
-if [ ! -d "$DEST" ]; then
-    echo ""
-    echo "Création du dossier $DEST..."
-    echo ""
-    mkdir -p "$DEST"
 fi
 
 # 5. Création de l'archive tar.gz
@@ -50,14 +50,17 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "Sauvegarde créée : $DEST/$NOM_FICHIER"
     echo "Taille de l'archive : $TAILLE"
-    echo "Log : $LOG"
+    echo "Log: $LOG"
     echo ""
     echo "-------------------------------------------"
+    echo "Sauvegarde créée : $DEST/$NOM_FICHIER" >> "$LOG"
+    echo "Taille de l'archive : $TAILLE" >> "$LOG"
 else
     echo "--------------------------------------------"
     echo ""
     echo "Erreur lors de la création de la sauvegarde."
-    echo "Log : $LOG"
+    echo "Log: $LOG"
     echo ""
     echo "--------------------------------------------"
+    echo "Erreur lors de la création de la sauvegarde."  >> "$LOG"
 fi
